@@ -1,0 +1,33 @@
+#Pontuacoes 
+
+Pontuacao_Gestao_de_residuos <- 0
+
+dados_pegadas$P1LIXO <- ifelse(dados_pegadas$separar_lixoOrganico == "Sempre separa o lixo organico do lixo não organico", 0,
+                               ifelse(dados_pegadas$separar_lixoOrganico == "As vezes separa o lixo organico do lixo não organico", 1, 2))
+
+# Utilizar lixo orgânico para compostagem
+dados_pegadas$P2LIXO <- ifelse(dados_pegadas$ulizarlixoorganico == "Sempre utiliza o lixo organico para compostagem", 0,
+                               ifelse(dados_pegadas$ulizarlixoorganico == "As vezes utiliza o lixo organico para compostagem", 1, 2))
+
+# Vender lixo para compostagem
+dados_pegadas$P3LIXO <- ifelse(dados_pegadas$vender_lixo_compostagem == "Sempre vende o lixo orgânico para compostagem", 0,
+                               ifelse(dados_pegadas$vender_lixo_compostagem == "Às vezes vende o lixo orgânico para compostagem", 1, 2))
+
+# Reutilizar lixo não orgânico
+dados_pegadas$P4LIXO <- ifelse(dados_pegadas$reutilizar_lixoOrganico == "Sempre reutiliza o lixo não orgânico dentro da empresa", 0,
+                               ifelse(dados_pegadas$reutilizar_lixoOrganico == "Às vezes reutiliza o lixo não orgânico dentro da empresa", 1, 2))
+
+# Vender lixo não orgânico
+dados_pegadas$P5LIXO <- ifelse(dados_pegadas$vender_lixo_negocio == "Sempre vende o lixo não organico que a empresa produz", 0,
+                               ifelse(dados_pegadas$vender_lixo_negocio == "Às vezes vende o lixo não orgânico que a empresa produz", 1, 2))
+
+# Poupar água
+dados_pegadas$P6LIXO <- ifelse(dados_pegadas$pouparAgua == "Poupa água sempre quando desempenha atividades do negócio", 0,
+                               ifelse(dados_pegadas$pouparAgua == "Poupa água quando é possível quando desempenha atividades do negócio", 1, 2))
+
+# Reutilizar água
+dados_pegadas$P7LIXO <- ifelse(dados_pegadas$ReutilizarAgua == "Sempre reutiliza água para desempenhar atividades do negócio", 0,
+                               ifelse(dados_pegadas$ReutilizarAgua == "Às vezes reutiliza água para desempenhar atividades do negócio", 1, 2))
+
+# Cálculo da pontuação total de gestão de resíduos
+dados_pegadas$Pontuacao_Gestao_de_residuos <- dados_pegadas$P1LIXO + dados_pegadas$P2LIXO + dados_pegadas$P3LIXO + dados_pegadas$P4LIXO + dados_pegadas$P5LIXO + dados_pegadas$P6LIXO + dados_pegadas$P7LIXO

@@ -1,19 +1,4 @@
-packages <- c("readxl","RStata","reticulate", "shiny", "bslib", "ggthemes", "RColorBrewer", "sf", "shinythemes", "lubridate", "jsonlite",
-              "stringr", "readr", "dplyr", "tidyverse", "shinyjs", "plotly", "ggplot2", "DT", "shinyWidgets",
-              "shinydashboard", "shinycssloaders", "cowplot", "ggmap", "ggspatial", "rmarkdown", "rgdal", "RStata",
-              "fontawesome", "haven", "readxl", "gridExtra", "scales", "writexl", "openxlsx", "kableExtra", "rlang", "formattable"
-)
-
  
-install_packages <- packages[!sapply(packages, requireNamespace, quietly = TRUE)]
-
-if (length(install_packages) > 0) {
-  install.packages(install_packages)
-}
-
-
-# Load packages
-
 library(shiny)
 library(rlang)
 library(RStata)
@@ -51,14 +36,6 @@ library(cowplot)
 library(kableExtra)
 library(jsonlite)
 
-
-##importr dados financeiros 
-dados_ficticios <- read_excel("dados_ficticios_com_lucro.xlsx")
-
-#importar dados de Pegada de carbono
-dados_empreendedoras <- read_excel("Pegada de Carbono Report.xlsx")
-
-dados_pegadas <- dados_empreendedoras
 
 
 
@@ -278,7 +255,7 @@ server <- function(input, output) {
   ####################Pontuacões##############
   output$graficoPontuacao <- renderPlot({
     # Subconjunto dos dados com base nos filtros selecionados
-    dados_filtrados <- dados_empreendedoras
+    dados_filtrados <- dados_pegadas
     if (input$projeto_pegada != "Todos") {
       dados_filtrados <- dados_filtrados[dados_filtrados$nome_projeto == input$projeto_pegada, ]
     }
