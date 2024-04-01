@@ -62,3 +62,6 @@ if (levas_embora_embalados == "Nunca adquire produtos vendidos em embalagens pl√
 
 # C√°lculo do resultado
 Pontuacao_aquisicao <- p4compras + p5compra + p6pegada + p7embalagens + p8transporte + p9embalados
+
+
+CAlcular total
