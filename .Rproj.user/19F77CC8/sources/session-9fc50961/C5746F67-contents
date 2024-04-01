@@ -255,7 +255,7 @@ server <- function(input, output) {
   ####################Pontuacões##############
   output$graficoPontuacao <- renderPlot({
     # Subconjunto dos dados com base nos filtros selecionados
-    dados_filtrados <- dados_empreendedoras
+    dados_filtrados <- dados_pegadas
     if (input$projeto_pegada != "Todos") {
       dados_filtrados <- dados_filtrados[dados_filtrados$nome_projeto == input$projeto_pegada, ]
     }

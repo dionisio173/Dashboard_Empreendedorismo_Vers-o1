@@ -56,9 +56,19 @@ library(jsonlite)
 dados_ficticios <- read_excel("dados_ficticios_com_lucro.xlsx")
 
 #importar dados de Pegada de carbono
-dados_empreendedoras <- read_excel("Pegada de Carbono Report.xlsx")
+dados_pegadas <- read_excel("Pegada de Carbono Report.xlsx")
 
-dados_pegadas <- dados_empreendedoras
+ 
+
+### Alterar nome das variaveis
+dados_pegadas <- dados_pegadas %>% rename(
+  compra_fornecedor_local= `Compras os produtos para seu negócio de fornecedor local?`,
+  Quantas_vezes = `Quantas vezes na semana ou no mês compras os produtos para desempenhar vosso negócio?`
+)
+
+
+ 
+
 
 
 
