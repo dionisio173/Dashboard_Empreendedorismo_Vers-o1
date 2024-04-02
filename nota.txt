@@ -1,67 +1,9 @@
-p8transporte <- 0
-p7embalagens <- 0
-p6pegada <- 0
-p4compras <- 0
-p5compra <- 0
-p9embalados <- 0
-Pontuacao_aquisicao <- 0
-
-# Compra de fornecedor local
-if (compra_fornecedor_local == "Sempre compra de fornecedor local") {
-  p4compras <- 0
-} else if (compra_fornecedor_local == "As vezes compra de fornecedor local") {
-  p4compras <- 1
-} else if (compra_fornecedor_local == "Nunca compra de fornecedor local") {
-  p4compras <- 2
-}
-
-# Quantas vezes compra a grosso
-if (Quantas_vezes == "Compra a grosso 1-2 vezes na semana/mês (a depender do negócio)") {
-  p5compra <- 0
-} else if (Quantas_vezes == "Compra a grosso 3-4 vezes na semana/mês (a depender do negócio)") {
-  p5compra <- 1
-} else if (Quantas_vezes == "Compra sempre que precisa sem se preocupar com quantas deslocações está a fazer") {
-  p5compra <- 2
-}
-
-# Priorização de produtos de menor pegada de carbono
-if (Quando_compras == "Sempre prioriza produtos de menor pegada de carbono (ex. papel ao invés de plástico)") {
-  p6pegada <- 0
-} else if (Quando_compras == "Às vezes prioriza produtos de menor pegada de carbono (ex. papel ao invés de plástico)") {
-  p6pegada <- 1
-} else if (Quando_compras == "Nunca prioriza produtos de menor pegada de carbono (ex. papel ao invés de plástico)") {
-  p6pegada <- 2
-}
-
-# Priorização de embalagens de menor pegada de carbono
-if (Quando_compras_as_embalagens == "Sempre prioriza produtos de menor pegada de carbono (ex. papel ao invés de plástico)") {
-  p7embalagens <- 0
-} else if (Quando_compras_as_embalagens == "Às vezes prioriza produtos de menor pegada de carbono (ex. papel ao invés de plástico)") {
-  p7embalagens <- 1
-} else if (Quando_compras_as_embalagens == "Nunca prioriza produtos de menor pegada de carbono (ex. papel ao invés de plástico)") {
-  p7embalagens <- 2
-}
-
-# Meios de deslocação de baixa emissão de carbono
-if (Quando_vais_a_comprar == "Sempre utiliza meios de deslocação que têm baixa emissão de carbono (ex. bicicleta, ir de chapa ou ir a pé)") {
-  p8transporte <- 0
-} else if (Quando_vais_a_comprar == "Às vezes utiliza meios de deslocação que têm baixa emissão de carbono (ex. bicicleta, ir de chapa ou ir a pé)") {
-  p8transporte <- 1
-} else if (Quando_vais_a_comprar == "Nunca utiliza meios de deslocação que têm baixa emissão de carbono (ex. bicicleta, ir de chapa ou ir a pé)") {
-  p8transporte <- 2
-}
-
-# Produtos vendidos em embalagens plásticas
-if (levas_embora_embalados == "Nunca adquire produtos vendidos em embalagens plásticas") {
-  p9embalados <- 0
-} else if (levas_embora_embalados == "Às vezes adquire produtos vendidos em embalagens plásticas") {
-  p9embalados <- 1
-} else if (levas_embora_embalados == "Sempre adquire produtos vendidos em embalagens plásticas") {
-  p9embalados <- 2
-}
-
-# Cálculo do resultado
-Pontuacao_aquisicao <- p4compras + p5compra + p6pegada + p7embalagens + p8transporte + p9embalados
-
-
-CAlcular total
+ggplot(dados_pegadas) +
+  aes(
+    x = `SECTOR DA EMPREENDEDORA`,
+    fill = `SECTOR DA EMPREENDEDORA`
+  ) +
+  geom_bar() +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(cidade))

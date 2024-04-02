@@ -38,79 +38,81 @@ library(jsonlite)
 
 
 
-
-# Definir a interface do usuário
 ui <- fluidPage(
   theme = shinytheme("flatly"),
   titlePanel("Dashboard Empreendedorismo"),
   navbarPage("Navegação",
+             
              tabPanel("PAM_VERDE",
                       sidebarLayout(
                         sidebarPanel(
-                          selectInput("projeto", "Projeto:", choices = c("Todos", unique(dados_ficticios$Projeto))),
                           selectInput("cidade", "Cidade:", choices = c("Todas", unique(dados_ficticios$Cidade))),
                           selectInput("ano", "Ano do Projeto:", choices = c("Todos", unique(dados_ficticios$Ano_Projeto))),
                           selectInput("ciclo", "Ciclo:", choices = c("Todos", unique(dados_ficticios$Ciclo))),
                         ),
                         mainPanel(
-                          tabsetPanel(
-                            tabPanel("Visão Geral", 
-                                     wellPanel(
-                                       withSpinner(plotOutput("resumo")),
-                                       downloadButton("downloadData", "Baixar Inscritas")
-                                     )
-                            ),
-                            tabPanel("Análise Dos Ciclos",
-                                     column(12,
-                                            wellPanel(((" ")),
-                                                      withSpinner(plotOutput("grafico_lucro_mes")),
-                                                      downloadButton("downloadLucro", "Baixar Dados de Lucro")
-                                            ),
-                                            column(12,
-                                                   # wellPanel(("Grafico de linha")),
-                                                   # (withSpinner(plotOutput("grafico_linha"), color = "black"))
-                                            )
-                                     )
-                            ),
-                            
-                            tabPanel("Tabela de Dados", 
-                                     wellPanel(
-                                       withSpinner(dataTableOutput("tabela_dados"))
-                                     )
-                            )
+                          dropdownMenu(type = "tabs",
+                                       tabPanel("Visão Geral", 
+                                                wellPanel(
+                                                  withSpinner(plotOutput("resumo")),
+                                                  downloadButton("downloadData", "Baixar Inscritas")
+                                                )
+                                       ),
+                                       tabPanel("Análise Dos Ciclos",
+                                                column(12,
+                                                       wellPanel(((" ")),
+                                                                 withSpinner(plotOutput("grafico_lucro_mes")),
+                                                                 downloadButton("downloadLucro", "Baixar Dados de Lucro")
+                                                       ),
+                                                       column(12,
+                                                              # wellPanel(("Grafico de linha")),
+                                                              # (withSpinner(plotOutput("grafico_linha"), color = "black"))
+                                                       )
+                                                )
+                                       ),
+                                       tabPanel("Tabela de Dados", 
+                                                wellPanel(
+                                                  withSpinner(dataTableOutput("tabela_dados"))
+                                                )
+                                       )
                           )
                         )
                       )
              ),
+             
              tabPanel("PEGADA DE CARBONO",
                       sidebarLayout(
                         sidebarPanel(
-                          selectInput("projeto_pegada", "Projeto:", choices = c("Todos", unique(dados_pegadas$nome_projeto))),
                           selectInput("cidade_pegada", "Cidade:", choices = c("Todas", unique(dados_pegadas$cidade))),
                           selectInput("ano_pegada", "Ano do Projeto:", choices = c("Todos", unique(dados_pegadas$ano_projeto))),
                           selectInput("ciclo_pegada", "Ciclo:", choices = c("Todos", unique(dados_pegadas$ciclo))),
                         ),
+                        
                         mainPanel(
-                          tabsetPanel(
-                            tabPanel("Visão Geral", 
-                                     wellPanel(
-                                       withSpinner(plotOutput("Grafico_barras_pegada")),
-                                       downloadButton("downloadVisaoGeral_pegada", "Baixar Visão Geral")
-                                     )
-                            ),
-                            tabPanel("Análise das Pontuações",
-                                     wellPanel(
-                                       plotOutput("graficoPontuacao"),
-                                       downloadButton("downloadPontuacao", "Baixar Pontuações")
-                                     )
-                            )
+                          dropdownMenu(type = "tabs",
+                                       tabPanel("Visão Geral", 
+                                                wellPanel(
+                                                  withSpinner(plotOutput("Grafico_barras_pegada")),
+                                                  downloadButton("downloadVisaoGeral_pegada", "Baixar Visão Geral")
+                                                ),
+                                                column(12,
+                                                       wellPanel((("Grafico de Distribuicão dos Sectores ")),
+                                                                 withSpinner(plotOutput("graficoSectores"))
+                                                       )
+                                                )
+                                       ),
+                                       tabPanel("Análise das Pontuações",
+                                                wellPanel(
+                                                  plotOutput("graficoPontuacao"),
+                                                  downloadButton("downloadPontuacao", "Baixar Pontuações")
+                                                )
+                                       )
                           )
                         )
                       )
              )
   )
 )
-
 # Definir o servidor
 server <- function(input, output) {
   
@@ -128,9 +130,6 @@ server <- function(input, output) {
   # Subconjunto dos dados com base nos filtros selecionados
   dados_filtrados <- reactive({
     df <- dados_ficticios
-    if (input$projeto != "Todos") {
-      df <- df[df$Projeto == input$projeto, ]
-    }
     if (input$cidade != "Todas") {
       df <- df[df$Cidade == input$cidade, ]
     }
@@ -155,7 +154,7 @@ server <- function(input, output) {
       geom_text(aes(label = paste0(n, " (", round(Percentagem, 1), "%)")),
                 position = position_stack(vjust = 0.5), size = 9) +
       labs(x = "Projeto", y = "Número de Inscritas", title = "Número de Empreendedoras Inscritas por Projeto") +
-      theme(legend.position = "none")
+      theme(legend.position = "none", panel.grid = element_blank())
   })
  ########################LUCRO MES########################################################
   
@@ -169,7 +168,8 @@ server <- function(input, output) {
       geom_bar(stat = "identity") +
       geom_text(aes(label = round(Media_Lucro, 2)), vjust = -0.5) +
       scale_fill_manual(values = c("#9442D4", "#F77333", "#008080")) +
-      labs(x = "Mês", y = "Média de Lucro", title = "Média de Lucro por Mês VS Ciclo")
+      labs(x = "Mês", y = "Média de Lucro", title = "Média de Lucro por Mês VS Ciclo") +
+      theme(legend.position = "none", panel.grid = element_blank())
   })
   
   output$downloadLucro <- downloadHandler(
@@ -205,12 +205,6 @@ server <- function(input, output) {
   # Subconjunto dos dados com base nos filtros selecionados para a Pegada de Carbono
   dados_pegada_filtrados <- reactive({
     df <- dados_pegadas
-    if (input$projeto_pegada != "Todos") {
-      df <- df[df$nome_projeto == input$projeto_pegada, ]
-    }
-    if (input$cidade_pegada != "Todas") {
-      df <- df[df$cidade == input$cidade_pegada, ]
-    }
     if (input$ano_pegada != "Todos") {
       df <- df[df$ano_projeto == as.numeric(input$ano_pegada), ]
     }
@@ -220,27 +214,26 @@ server <- function(input, output) {
     df
   })
   
-  # Renderização do gráfico de barras para o número de inscritas na Pegada de Carbono
+  # Renderização do gráfico de barras para o número de inscritas na Pegada de Carbono por cidade
   output$Grafico_barras_pegada <- renderPlot({
-    # Contagem de inscritas por projeto
+    # Contagem de inscritas por cidade
     dados_contagem <- dados_pegada_filtrados() %>%
-      group_by(nome_projeto) %>%
+      group_by(cidade) %>%
       summarise(num_inscritas = n())
     
     # Adicionando percentagens
     dados_contagem <- dados_contagem %>%
       mutate(Percentagem = num_inscritas / sum(num_inscritas) * 100)
     
-    # Gráfico de barras com cores diferentes para cada projeto
-    ggplot(dados_contagem, aes(x = nome_projeto, y = num_inscritas, fill = nome_projeto)) +
+    # Gráfico de barras com cores diferentes para cada cidade
+    ggplot(dados_contagem, aes(x = cidade, y = num_inscritas, fill = cidade)) +
       geom_bar(stat = "identity") +
       geom_text(aes(label = paste0(num_inscritas, " (", round(Percentagem, 1), "%)")),
                 position = position_stack(vjust = 0.5), size = 9) +
-      labs(x = "Projeto", y = "Número de Inscritas", title = "Número de Inscritas na Pegada de Carbono por Projeto") +
+      labs(x = "Cidade", y = "Número de Inscritas", title = "Número de Inscritas por Cidade") +
       theme_minimal() +
-      theme(legend.position = "none")
+      theme(legend.position = "none", panel.grid = element_blank())
   })
-  
   
   # Função para download dos dados de visão geral da Pegada de Carbono em formato Excel
   output$downloadVisaoGeral_pegada <- downloadHandler(
@@ -252,13 +245,55 @@ server <- function(input, output) {
       write.xlsx(dados_pegada_filtrados(), path = file)
     }
   )
+
+  ##############SECTOR DAS EMPREENDEDORAS############
+  output$graficoSectores <- renderPlot({
+    filtered_data <- dados_pegadas %>%
+      filter(
+        if (input$ano_pegada != "Todos") ano_projeto == input$ano_pegada else TRUE,
+        if (input$ciclo_pegada != "Todos") ciclo == input$ciclo_pegada else TRUE
+      )
+    
+    city_totals <- filtered_data %>%
+      group_by(cidade) %>%
+      summarise(total = n())
+    
+    percentage_data <- filtered_data %>%
+      group_by(`SECTOR DA EMPREENDEDORA`, cidade) %>%
+      summarise(count = n()) %>%
+      left_join(city_totals, by = "cidade") %>%
+      group_by(`SECTOR DA EMPREENDEDORA`) %>%
+      mutate(percentage = count / total * 100)
+    
+    # Definindo uma paleta de cores alternativa
+    cores_alternativas <- c("#F77333", "#69C7BE", "#8054A2", "#ADD8E6", "#90EE90", "#E6E6FA", "#FFFF00", "#FFA500")
+    
+    # Gráfico de barras faceteado por cidade
+    ggplot(percentage_data) +
+      aes(x = `SECTOR DA EMPREENDEDORA`, y = percentage, fill = `SECTOR DA EMPREENDEDORA`) +
+      geom_col() +
+      theme_minimal() +
+      facet_wrap(vars(cidade)) +
+      scale_fill_manual(values = cores_alternativas) +  # Usando a paleta de cores alternativa
+      geom_text(aes(label = paste0(count, " (", round(percentage, 1), "%)")), 
+                position = position_stack(vjust = 0.5)) +
+      scale_x_discrete(guide = "none") +  # Remover a legenda no eixo x
+      theme(legend.position = "right", 
+            legend.box.background = element_blank(),
+            legend.key = element_blank(),
+            legend.title = element_blank(),
+            guides(fill = guide_legend(override.aes = list(alpha = 0))),
+        panel.grid = element_blank())
+  })
+  
+  
+  
+  
   ####################Pontuacões##############
   output$graficoPontuacao <- renderPlot({
     # Subconjunto dos dados com base nos filtros selecionados
     dados_filtrados <- dados_pegadas
-    if (input$projeto_pegada != "Todos") {
-      dados_filtrados <- dados_filtrados[dados_filtrados$nome_projeto == input$projeto_pegada, ]
-    }
+    
     if (input$cidade_pegada != "Todas") {
       dados_filtrados <- dados_filtrados[dados_filtrados$cidade == input$cidade_pegada, ]
     }
@@ -269,26 +304,28 @@ server <- function(input, output) {
       dados_filtrados <- dados_filtrados[dados_filtrados$ciclo == input$ciclo_pegada, ]
     }
     
-    # Contagem de participantes por categoria de pegada de carbono
+    # Contagem de participantes por categoria de pegada de carbono e tipo de avaliação
     dados_contagem <- dados_filtrados %>%
-      group_by(status_pegada_carbono) %>%
+      group_by(status_pegada_carbono, Tipo_de_Avaliacao) %>%
       summarise(num_participantes = n())
     
     # Adicionando percentagens
     dados_contagem <- dados_contagem %>%
+      group_by(Tipo_de_Avaliacao) %>%
       mutate(Percentagem = num_participantes / sum(num_participantes) * 100)
     
     # Gráfico de barras com cores diferentes para cada categoria
     ggplot(dados_contagem, aes(x = status_pegada_carbono, y = num_participantes, fill = status_pegada_carbono)) +
       geom_bar(stat = "identity") +
       geom_text(aes(label = paste0(num_participantes, " (", round(Percentagem, 1), "%)")),
-                position = position_stack(vjust = 0.5), size = 9) +
+                position = position_stack(vjust = 0.5), size = 7) +
       labs(x = "Status Pegada de Carbono", y = "Número de Participantes", title = "Número de Participantes por Categoria de Pegada de Carbono") +
+      facet_wrap(~Tipo_de_Avaliacao, scales = "free") +
       theme_minimal() +
-      theme(legend.position = "none")
+      theme(legend.position = "none", panel.grid = element_blank()) +
+      scale_fill_manual(values = c("#F37238", "#69C7BE", "#8054A2"))
   })
-  
 }
-  
+   
 # Executar o aplicativo
 shinyApp(ui = ui, server = server)

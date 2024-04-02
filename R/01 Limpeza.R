@@ -62,7 +62,7 @@ dados_pegadas <- read_excel("Pegada de Carbono Report.xlsx")
 
 ### Alterar nome das variaveis
 dados_pegadas <- dados_pegadas %>% rename(
-  compra_fornecedor_local= `Compras os produtos para seu negócio de fornecedor local?`,
+  compra_fornecedor_local = `Compras os produtos para seu negócio de fornecedor local?`,
   Quantas_vezes = `Quantas vezes na semana ou no mês compras os produtos para desempenhar vosso negócio?`,
   Quando_compras = `Quando compras os produtos para desempenhar teu negócio, priorizas aqueles que tenham menor pegada de carbono?`,
   Quando_compras_as_embalagens =  `Na Aquisição, quando compras as embalagens para entregar teus produtos, priorizas aqueles que tenham menor pegada de carbono?`,
@@ -80,8 +80,12 @@ dados_pegadas <- dados_pegadas %>% rename(
   utiliza_carvao = `Utilizas madeira carvão ou querosene no seu negócio?`,
   Desliga_os_equipamentos = `Desliga os equipamentos do vosso negócio quando não estás a utilizá-los?`,
   Utilizas_energia_solar = `Utilizas energia solar no seu negócio?`,
-  Pontuacao_Gestao_de_residuos=`Pontuação Gestão de residuos`
-  
+  Pontuacao_Gestao_de_residuos=`Pontuação Gestão de residuos`,
+  ano_projeto=`Ano do Projecto`,
+  nome_projeto=`Nome Projecto`,
+  cidade=Cidade,
+  Tipo_de_Avaliacao = `Tipo de Avaliação`,
+  ciclo= Ciclo
   )
 
 
