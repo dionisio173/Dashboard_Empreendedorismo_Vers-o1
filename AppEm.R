@@ -38,11 +38,12 @@ library(jsonlite)
 
 
 
+
+# Definir a interface do usuário
 ui <- fluidPage(
   theme = shinytheme("flatly"),
   titlePanel("Dashboard Empreendedorismo"),
   navbarPage("Navegação",
-             
              tabPanel("PAM_VERDE",
                       sidebarLayout(
                         sidebarPanel(
@@ -51,35 +52,35 @@ ui <- fluidPage(
                           selectInput("ciclo", "Ciclo:", choices = c("Todos", unique(dados_ficticios$Ciclo))),
                         ),
                         mainPanel(
-                          dropdownMenu(type = "tabs",
-                                       tabPanel("Visão Geral", 
-                                                wellPanel(
-                                                  withSpinner(plotOutput("resumo")),
-                                                  downloadButton("downloadData", "Baixar Inscritas")
-                                                )
-                                       ),
-                                       tabPanel("Análise Dos Ciclos",
-                                                column(12,
-                                                       wellPanel(((" ")),
-                                                                 withSpinner(plotOutput("grafico_lucro_mes")),
-                                                                 downloadButton("downloadLucro", "Baixar Dados de Lucro")
-                                                       ),
-                                                       column(12,
-                                                              # wellPanel(("Grafico de linha")),
-                                                              # (withSpinner(plotOutput("grafico_linha"), color = "black"))
-                                                       )
-                                                )
-                                       ),
-                                       tabPanel("Tabela de Dados", 
-                                                wellPanel(
-                                                  withSpinner(dataTableOutput("tabela_dados"))
-                                                )
-                                       )
+                          tabsetPanel(
+                            tabPanel("Visão Geral", 
+                                     wellPanel(
+                                       withSpinner(plotOutput("resumo")),
+                                       downloadButton("downloadData", "Baixar Inscritas")
+                                     )
+                            ),
+                            tabPanel("Análise Dos Ciclos",
+                                     column(12,
+                                            wellPanel(((" ")),
+                                                      withSpinner(plotOutput("grafico_lucro_mes")),
+                                                      downloadButton("downloadLucro", "Baixar Dados de Lucro")
+                                            ),
+                                            column(12,
+                                                   # wellPanel(("Grafico de linha")),
+                                                   # (withSpinner(plotOutput("grafico_linha"), color = "black"))
+                                            )
+                                     )
+                            ),
+                            
+                            tabPanel("Tabela de Dados", 
+                                     wellPanel(
+                                       withSpinner(dataTableOutput("tabela_dados"))
+                                     )
+                            )
                           )
                         )
                       )
              ),
-             
              tabPanel("PEGADA DE CARBONO",
                       sidebarLayout(
                         sidebarPanel(
@@ -89,30 +90,31 @@ ui <- fluidPage(
                         ),
                         
                         mainPanel(
-                          dropdownMenu(type = "tabs",
-                                       tabPanel("Visão Geral", 
-                                                wellPanel(
-                                                  withSpinner(plotOutput("Grafico_barras_pegada")),
-                                                  downloadButton("downloadVisaoGeral_pegada", "Baixar Visão Geral")
-                                                ),
-                                                column(12,
-                                                       wellPanel((("Grafico de Distribuicão dos Sectores ")),
-                                                                 withSpinner(plotOutput("graficoSectores"))
-                                                       )
-                                                )
-                                       ),
-                                       tabPanel("Análise das Pontuações",
-                                                wellPanel(
-                                                  plotOutput("graficoPontuacao"),
-                                                  downloadButton("downloadPontuacao", "Baixar Pontuações")
-                                                )
-                                       )
+                          tabsetPanel(
+                            tabPanel("Visão Geral", 
+                                     wellPanel(
+                                       withSpinner(plotOutput("Grafico_barras_pegada")),
+                                       downloadButton("downloadVisaoGeral_pegada", "Baixar Visão Geral")
+                                     ),
+                                     column(12,
+                                            wellPanel((("Grafico de Distribuicão dos Sectores ")),
+                                     withSpinner(plotOutput("graficoSectores"))
+                                            )
+                                     )
+                            ),
+                            tabPanel("Análise das Pontuações",
+                                     wellPanel(
+                                       plotOutput("graficoPontuacao"),
+                                       downloadButton("downloadPontuacao", "Baixar Pontuações")
+                                     )
+                            )
                           )
                         )
                       )
              )
   )
 )
+
 # Definir o servidor
 server <- function(input, output) {
   
