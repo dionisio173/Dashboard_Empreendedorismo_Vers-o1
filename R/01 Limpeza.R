@@ -52,9 +52,55 @@ library(kableExtra)
 library(jsonlite)
 
 
-##importr dados financeiros 
-dados_ficticios <- read_excel("dados_ficticios_com_lucro.xlsx")
+##importar dados financeiros
 
+Financeiro_Report <- read_excel("Financeiro Report.xlsx")
+
+# Converter as colunas de valores de texto para numérico
+Financeiro_Report$Rendimento <- as.numeric(gsub(",", "", Financeiro_Report$Rendimento))
+Financeiro_Report$`Custo Operacional` <- as.numeric(gsub(",", "", Financeiro_Report$`Custo Operacional`))
+Financeiro_Report$`Custo de produtos (Servicos)` <- as.numeric(gsub(",", "", Financeiro_Report$`Custo de produtos (Servicos)`))
+
+
+# Substituir NA por 0
+Financeiro_Report$Rendimento[is.na(Financeiro_Report$Rendimento)] <- 0
+Financeiro_Report$`Custo Operacional`[is.na(Financeiro_Report$`Custo Operacional`)] <- 0
+Financeiro_Report$`Custo de produtos (Servicos)`[is.na(Financeiro_Report$`Custo de produtos (Servicos)`)] <- 0
+
+# Calcular o lucro semanal
+Financeiro_Report$Lucro_Semanal <- Financeiro_Report$Rendimento - Financeiro_Report$`Custo Operacional` - Financeiro_Report$`Custo de produtos (Servicos)`
+
+# 
+# # Calcular o lucro mensal
+# Financeiro_Report$Lucro_Mensal <- Financeiro_Report$Rendimento - (Financeiro_Report$`Custo Operacional` + Financeiro_Report$`Custo de produtos (Servicos)`)
+# 
+Lucro_Mensal <- Financeiro_Report %>%
+  group_by(`Nome empreendedoras`,`Sector de Negocio`,`Ano Ciclo`, `Nome Projecto`, `Cidade de implementação`, Periodo) %>%
+  summarise(
+    Lucro_Mensal = sum(Rendimento - `Custo Operacional` - `Custo de produtos (Servicos)`),
+    Rendimento_Total = sum(Rendimento),
+    Custo_Operacional_Total = sum(`Custo Operacional`),
+    Custo_Produtos_Total = sum(`Custo de produtos (Servicos)`)
+  )
+
+# Visualizar o resultado
+print(Lucro_Mensal)
+
+dados_ficticios <- Lucro_Mensal
+
+### Alterar nome das variaveis
+dados_ficticios <- dados_ficticios %>% rename(
+  Rendimento = Rendimento_Total,
+  Custo_Operacional = Custo_Operacional_Total,
+  Custo_Produto = Custo_Produtos_Total,
+  Nome =  `Nome empreendedoras`,
+  Projeto = `Nome Projecto`,
+  Ano_Projeto =`Ano Ciclo`,
+  Lucro = Lucro_Mensal,
+  Cidade = `Cidade de implementação`,
+  Periodo_Mes = Periodo,
+  Sector_Negocio = `Sector de Negocio`
+)
 #importar dados de Pegada de carbono
 dados_pegadas <- read_excel("Pegada de Carbono Report.xlsx")
 
