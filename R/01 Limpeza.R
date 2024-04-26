@@ -70,10 +70,9 @@ Financeiro_Report$`Custo de produtos (Servicos)`[is.na(Financeiro_Report$`Custo 
 # Calcular o lucro semanal
 Financeiro_Report$Lucro_Semanal <- Financeiro_Report$Rendimento - Financeiro_Report$`Custo Operacional` - Financeiro_Report$`Custo de produtos (Servicos)`
 
-# 
+
 # # Calcular o lucro mensal
-# Financeiro_Report$Lucro_Mensal <- Financeiro_Report$Rendimento - (Financeiro_Report$`Custo Operacional` + Financeiro_Report$`Custo de produtos (Servicos)`)
-# 
+
 Lucro_Mensal <- Financeiro_Report %>%
   group_by(`Nome empreendedoras`,`Sector de Negocio`,`Ano Ciclo`, `Nome Projecto`, `Cidade de implementação`, Periodo) %>%
   summarise(
@@ -87,6 +86,50 @@ Lucro_Mensal <- Financeiro_Report %>%
 print(Lucro_Mensal)
 
 dados_ficticios <- Lucro_Mensal
+
+dados_ficticios <- dados_ficticios %>%
+  mutate(Periodo = case_when(
+    Periodo == "Primeiro Mes de Implementação" ~ "Primeiro Mês",
+    Periodo == "Segundo Mes de Implementação" ~ "Segundo Mês",
+    Periodo == "Terceiro Mes de Implementação" ~ "Terceiro Mês",
+    Periodo == "Quarto Mes de Implementação" ~ "Quarto Mês",
+    Periodo == "Quinto Mês de Implementação" ~ "Quinto Mês",
+    TRUE ~ Periodo # Mantém o valor original caso não corresponda a nenhum dos anteriores
+  ))
+
+Financeiro_Report <- Financeiro_Report %>%
+  mutate(Periodo = case_when(
+    Periodo == "Primeiro Mes de Implementação" ~ "Primeiro Mês",
+    Periodo == "Segundo Mes de Implementação" ~ "Segundo Mês",
+    Periodo == "Terceiro Mes de Implementação" ~ "Terceiro Mês",
+    Periodo == "Quarto Mes de Implementação" ~ "Quarto Mês",
+    Periodo == "Quinto Mês de Implementação" ~ "Quinto Mês",
+    TRUE ~ Periodo # Mantém o valor original caso não corresponda a nenhum dos anteriores
+  ))
+
+# # Converter a variável Periodo para texto
+# Financeiro_Report$Periodo <- as.character(Financeiro_Report$Periodo)
+# 
+# # Definir a ordem desejada dos meses
+# ordem_meses <- c("Primeiro Mês", "Segundo Mês", "Terceiro Mês", "Quarto Mês", "Quinto Mês")
+# 
+# # Organizar os meses no dataframe Financeiro_Report
+# Financeiro_Report$Periodo <- factor(Financeiro_Report$Periodo, levels = ordem_meses)
+
+
+Financeiro_Report <- Financeiro_Report %>% rename(
+  Rendimento = Rendimento,
+  # Custo_Operacional = Custo_Operacional_Total,
+  Custo_Produto = `Custo de produtos (Servicos)`,
+  # Nome =  `Nome empreendedoras`,
+  # Projeto = `Nome Projecto`,
+  # Ano_Projeto =`Ano Ciclo`,
+  # Lucro_Semanal = Lucro_Semanal,
+  # Cidade = `Cidade de implementação`,
+  # Periodo_Mes = Periodo,
+  # Sector_Negocio = `Sector de Negocio`
+)
+
 
 ### Alterar nome das variaveis
 dados_ficticios <- dados_ficticios %>% rename(
@@ -301,3 +344,4 @@ dados_pegadas$p9embalados <- NULL
 dados_pegadas <- dados_pegadas %>% rename(
   status_pegada_carbono= Status
 )
+
